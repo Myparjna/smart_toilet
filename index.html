@@ -1,399 +1,254 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>智慧沙滩救援预警系统</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.30.0/tabler-icons.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧公厕 - 保洁打卡系统</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Tabler Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css">
     <style>
-      body {
-        font-family: "Noto Sans SC", sans-serif;
-        background-color: #041a21;
-      }
-      .card {
-        background-color: rgba(19, 100, 128, 0.15);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(31, 198, 255, 0.2);
-      }
-      .grid-pattern {
-        background-image: linear-gradient(
-            rgba(31, 198, 255, 0.05) 1px,
-            transparent 1px
-          ),
-          linear-gradient(90deg, rgba(31, 198, 255, 0.05) 1px, transparent 1px);
-        background-size: 20px 20px;
-      }
-      .glow {
-        box-shadow: 0 0 15px rgba(31, 198, 255, 0.3);
-      }
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f5f7fa;
+        }
+        .app-container {
+            max-width: 414px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+        .watermark {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: rgba(0, 0, 0, 0.1);
+            font-size: 8px;
+            z-index: 1000;
+        }
     </style>
-  </head>
-  <body class="min-h-screen grid-pattern text-gray-100">
-    <div class="container mx-auto p-4">
-      <!-- Mockup Frame -->
-      <div class="max-w-5xl mx-auto bg-gray-900 rounded-lg p-4 mb-8">
-        <div class="flex items-center mb-6">
-          <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-          <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-          <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-          <div class="flex-grow text-center text-sm text-gray-400">
-            智慧沙滩救援预警系统 - 网格预警模块
-          </div>
-        </div>
-
-        <!-- Header with Title and Status -->
-        <div class="flex justify-between items-center mb-6">
-          <div class="flex items-center">
-            <i class="ti ti-bell-ringing text-2xl mr-2 text-[#1FC6FF]"></i>
-            <h1 class="text-2xl font-bold text-[#1FC6FF]">网格预警</h1>
-          </div>
-          <div class="flex space-x-3">
-            <div
-              class="bg-[#136480] bg-opacity-30 border border-[#136480] rounded-md px-4 py-2 flex items-center"
-            >
-              <span class="mr-2">预案状态</span>
-              <i class="ti ti-chevron-down text-[#1FC6FF]"></i>
-            </div>
-            <div
-              class="bg-[#136480] bg-opacity-30 border border-[#136480] rounded-md px-4 py-2 flex items-center"
-            >
-              <span class="mr-2">非管理时间段筛选</span>
-              <i class="ti ti-chevron-down text-[#1FC6FF]"></i>
-            </div>
-          </div>
-        </div>
-
-        <!-- Warning Cards Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <!-- Card 1: 待救援 - 红色 -->
-          <div class="card rounded-lg overflow-hidden glow">
-            <div
-              class="bg-gradient-to-r from-red-900 to-red-800 p-3 flex justify-between items-center"
-            >
-              <div class="flex flex-col">
-                <span class="text-white font-bold text-lg">待救援</span>
-                <span class="text-white text-xl font-bold">C5区</span>
-              </div>
-              <div class="bg-red-700 rounded-full p-1 animate-pulse">
-                <i class="ti ti-alarm text-xl text-white"></i>
-              </div>
-            </div>
-            <div
-              class="p-4 bg-gradient-to-b from-red-900/30 to-[#041A21]/80 h-32 flex flex-col justify-between"
-            >
-              <div class="flex items-center mb-2">
-                <i class="ti ti-droplet text-yellow-400 mr-2 text-xl"></i>
-                <span class="text-yellow-400 text-lg font-bold"
-                  >疑似溺水预警</span
-                >
-              </div>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="text-red-200">发生时间: 10:24:15</span>
-                <div
-                  class="bg-red-700/50 px-3 py-1 rounded-md text-sm flex items-center"
-                >
-                  <i class="ti ti-send mr-1"></i>
-                  <span>救生塔上报</span>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 水印 -->
+        <div class="watermark">Generated by DeepSeek Chat • 2023-11-15 • 8a3b5c7d</div>
+        
+        <!-- 顶部导航 -->
+        <header class="bg-blue-600 text-white p-4 shadow-md">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="ti ti-toilet-paper text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">智慧公厕保洁系统</h1>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 2: 救援中 - 红色 -->
-          <div class="card rounded-lg overflow-hidden glow">
-            <div
-              class="bg-gradient-to-r from-red-900 to-red-800 p-3 flex justify-between items-center"
-            >
-              <div class="flex flex-col">
-                <span class="text-white font-bold text-lg">救援中</span>
-                <span class="text-white text-xl font-bold">B4区</span>
-              </div>
-              <div class="bg-red-700 rounded-full p-1 animate-pulse">
-                <i class="ti ti-alert-triangle text-xl text-white"></i>
-              </div>
-            </div>
-            <div
-              class="p-4 bg-gradient-to-b from-red-900/30 to-[#041A21]/80 h-32 flex flex-col justify-between"
-            >
-              <div class="flex items-center mb-2">
-                <i class="ti ti-droplet text-yellow-400 mr-2 text-xl"></i>
-                <span class="text-yellow-400 text-lg font-bold"
-                  >刚刚溺水预警</span
-                >
-              </div>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="text-red-200">响应时间: 10:25:38</span>
-                <div
-                  class="bg-red-700/50 px-3 py-1 rounded-md text-sm flex items-center"
-                >
-                  <i class="ti ti-send mr-1"></i>
-                  <span>救生塔上报</span>
+                <div class="flex items-center">
+                    <i class="ti ti-bell text-xl"></i>
                 </div>
-              </div>
             </div>
-          </div>
+        </header>
 
-          <!-- Card 3: 预警中 - 黄色条纹 -->
-          <div class="card rounded-lg overflow-hidden">
-            <div
-              class="bg-gradient-to-r from-yellow-600 to-yellow-700 p-3 flex justify-between items-center"
-              style="
-                background-image: repeating-linear-gradient(
-                  45deg,
-                  rgba(255, 199, 0, 0.1),
-                  rgba(255, 199, 0, 0.1) 10px,
-                  rgba(255, 199, 0, 0.3) 10px,
-                  rgba(255, 199, 0, 0.3) 20px
-                );
-              "
-            >
-              <div class="flex flex-col">
-                <span class="text-white font-bold text-lg">预警中</span>
-                <span class="text-white text-xl font-bold">A2区</span>
-              </div>
-              <div class="bg-yellow-500 rounded-full p-1 animate-pulse">
-                <i class="ti ti-alert-circle text-xl text-white"></i>
-              </div>
-            </div>
-            <div
-              class="p-4 bg-gradient-to-b from-yellow-700/30 to-[#041A21]/80 h-32 flex flex-col justify-between"
-            >
-              <div class="flex items-center mb-2">
-                <i class="ti ti-users text-[#59FFFF] mr-2 text-xl"></i>
-                <span class="text-[#59FFFF] text-lg font-bold"
-                  >人数将满预警</span
-                >
-              </div>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="text-yellow-200">当前容量: 92%</span>
-                <div
-                  class="bg-yellow-600/50 px-3 py-1 rounded-md text-sm flex items-center"
-                >
-                  <i class="ti ti-device-analytics mr-1"></i>
-                  <span>系统自动</span>
+        <!-- 主要内容 -->
+        <main class="p-4 pb-20">
+            <!-- 厕所信息卡片 -->
+            <div class="bg-white rounded-xl shadow-md p-5 mb-6 border border-gray-100">
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-100 p-3 rounded-full mr-3">
+                        <i class="ti ti-building-toilet text-blue-600 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">市民广场东侧公厕</h2>
+                        <p class="text-sm text-gray-500">当前保洁员: 张阿姨</p>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 4: 预警中 - 橙色 -->
-          <div class="card rounded-lg overflow-hidden">
-            <div
-              class="bg-gradient-to-r from-orange-700 to-orange-600 p-3 flex justify-between items-center"
-            >
-              <div class="flex flex-col">
-                <span class="text-white font-bold text-lg">预警中</span>
-                <span class="text-white text-xl font-bold">D3区</span>
-              </div>
-              <div class="bg-orange-500 rounded-full p-1 animate-pulse">
-                <i class="ti ti-alert-octagon text-xl text-white"></i>
-              </div>
-            </div>
-            <div
-              class="p-4 bg-gradient-to-b from-orange-700/30 to-[#041A21]/80 h-32 flex flex-col justify-between"
-            >
-              <div class="flex items-center mb-2">
-                <i class="ti ti-users-group text-[#FFC800] mr-2 text-xl"></i>
-                <span class="text-[#FFC800] text-lg font-bold"
-                  >人数过载预警</span
-                >
-              </div>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="text-orange-200">超载人数: 12人</span>
-                <div
-                  class="bg-orange-600/50 px-3 py-1 rounded-md text-sm flex items-center"
-                >
-                  <i class="ti ti-device-analytics mr-1"></i>
-                  <span>系统自动</span>
+                
+                <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+                    <div class="flex items-center">
+                        <i class="ti ti-clock text-gray-400 mr-2"></i>
+                        <span>开放时间: 6:00-22:00</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="ti ti-building-community text-gray-400 mr-2"></i>
+                        <span>养护单位: 市环卫局</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="ti ti-phone text-gray-400 mr-2"></i>
+                        <span>联系电话: 12345</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="ti ti-map-pin text-gray-400 mr-2"></i>
+                        <span>经度: 116.404, 纬度: 39.915</span>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
 
-          <!-- Card 5: 预警中 - 黄色条纹 -->
-          <div class="card rounded-lg overflow-hidden">
-            <div
-              class="bg-gradient-to-r from-yellow-600 to-yellow-700 p-3 flex justify-between items-center"
-              style="
-                background-image: repeating-linear-gradient(
-                  45deg,
-                  rgba(255, 199, 0, 0.1),
-                  rgba(255, 199, 0, 0.1) 10px,
-                  rgba(255, 199, 0, 0.3) 10px,
-                  rgba(255, 199, 0, 0.3) 20px
-                );
-              "
-            >
-              <div class="flex flex-col">
-                <span class="text-white font-bold text-lg">预警中</span>
-                <span class="text-white text-xl font-bold">B6区</span>
-              </div>
-              <div class="bg-yellow-500 rounded-full p-1 animate-pulse">
-                <i class="ti ti-user-exclamation text-xl text-white"></i>
-              </div>
-            </div>
-            <div
-              class="p-4 bg-gradient-to-b from-yellow-700/30 to-[#041A21]/80 h-32 flex flex-col justify-between"
-            >
-              <div class="flex items-center mb-2">
-                <i class="ti ti-swim text-[#86FB8B] mr-2 text-xl"></i>
-                <span class="text-[#86FB8B] text-lg font-bold"
-                  >独行游泳预警</span
-                >
-              </div>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="text-yellow-200">持续时间: 3分钟</span>
-                <div
-                  class="bg-yellow-600/50 px-3 py-1 rounded-md text-sm flex items-center"
-                >
-                  <i class="ti ti-camera mr-1"></i>
-                  <span>AI识别</span>
+            <!-- 打卡区域 -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-6 text-center border border-gray-100">
+                <div class="mb-4">
+                    <div class="text-sm text-gray-500 mb-1">今日打卡状态</div>
+                    <div class="text-lg font-bold text-blue-600">未打卡</div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 6: 预警中 - 黄色条纹 -->
-          <div class="card rounded-lg overflow-hidden">
-            <div
-              class="bg-gradient-to-r from-yellow-600 to-yellow-700 p-3 flex justify-between items-center"
-              style="
-                background-image: repeating-linear-gradient(
-                  45deg,
-                  rgba(255, 199, 0, 0.1),
-                  rgba(255, 199, 0, 0.1) 10px,
-                  rgba(255, 199, 0, 0.3) 10px,
-                  rgba(255, 199, 0, 0.3) 20px
-                );
-              "
-            >
-              <div class="flex flex-col">
-                <span class="text-white font-bold text-lg">预警中</span>
-                <span class="text-white text-xl font-bold">A8区</span>
-              </div>
-              <div class="bg-yellow-500 rounded-full p-1 animate-pulse">
-                <i class="ti ti-map-pin-exclamation text-xl text-white"></i>
-              </div>
-            </div>
-            <div
-              class="p-4 bg-gradient-to-b from-yellow-700/30 to-[#041A21]/80 h-32 flex flex-col justify-between"
-            >
-              <div class="flex items-center mb-2">
-                <i class="ti ti-map-pin-off text-[#59FFFF] mr-2 text-xl"></i>
-                <span class="text-[#59FFFF] text-lg font-bold"
-                  >超区域游泳预警</span
-                >
-              </div>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="text-yellow-200">越界距离: 30米</span>
-                <div
-                  class="bg-yellow-600/50 px-3 py-1 rounded-md text-sm flex items-center"
-                >
-                  <i class="ti ti-radar mr-1"></i>
-                  <span>监控雷达</span>
+                
+                <button id="checkInBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <i class="ti ti-fingerprint mr-2"></i>立即打卡
+                </button>
+                
+                <div class="mt-4 text-xs text-gray-400">
+                    打卡将记录当前时间、位置和经纬度信息
                 </div>
-              </div>
             </div>
-          </div>
 
-          <!-- Card 7: 已救援 - 蓝色 -->
-          <div class="card rounded-lg overflow-hidden">
-            <div
-              class="bg-gradient-to-r from-blue-900 to-blue-800 p-3 flex justify-between items-center"
-            >
-              <div class="flex flex-col">
-                <span class="text-white font-bold text-lg">已救援</span>
-                <span class="text-white text-xl font-bold">C2区</span>
-              </div>
-              <div class="bg-blue-700 rounded-full p-1">
-                <i class="ti ti-check text-xl text-white"></i>
-              </div>
-            </div>
-            <div
-              class="p-4 bg-gradient-to-b from-blue-900/30 to-[#041A21]/80 h-32 flex flex-col justify-between"
-            >
-              <div class="flex items-center mb-2">
-                <i
-                  class="ti ti-droplet-filled-2 text-[#FF6B6B] mr-2 text-xl"
-                ></i>
-                <span class="text-[#FF6B6B] text-lg font-bold"
-                  >溺水危险预警</span
-                >
-              </div>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="text-blue-200">处理时间: 8分钟</span>
-                <div
-                  class="bg-blue-700/50 px-3 py-1 rounded-md text-sm flex items-center"
-                >
-                  <i class="ti ti-file-check mr-1"></i>
-                  <span>已填报</span>
+            <!-- 评价信息 -->
+            <div class="bg-white rounded-xl shadow-md p-5 mb-6 border border-gray-100">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="ti ti-star mr-2 text-yellow-500"></i>公厕评价
+                </h3>
+                
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">整体满意度</span>
+                        <div class="flex">
+                            <i class="ti ti-star-filled text-yellow-400"></i>
+                            <i class="ti ti-star-filled text-yellow-400"></i>
+                            <i class="ti ti-star-filled text-yellow-400"></i>
+                            <i class="ti ti-star-filled text-yellow-400"></i>
+                            <i class="ti ti-star text-yellow-400"></i>
+                            <span class="text-sm text-gray-600 ml-1">4.2</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span>清洁度</span>
+                                <span>4.5</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span>设施完好度</span>
+                                <span>3.8</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 76%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span>异味控制</span>
+                                <span>4.0</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 8: 已预警 - 灰色 -->
-          <div class="card rounded-lg overflow-hidden">
-            <div
-              class="bg-gradient-to-r from-slate-800 to-slate-700 p-3 flex justify-between items-center"
-            >
-              <div class="flex flex-col">
-                <span class="text-white font-bold text-lg">已预警</span>
-                <span class="text-white text-xl font-bold">D7区</span>
-              </div>
-              <div class="bg-slate-600 rounded-full p-1">
-                <i class="ti ti-history text-xl text-white"></i>
-              </div>
-            </div>
-            <div
-              class="p-4 bg-gradient-to-b from-slate-800/30 to-[#041A21]/80 h-32 flex flex-col justify-between"
-            >
-              <div class="flex items-center mb-2">
-                <i class="ti ti-clock text-[#AAAAAA] mr-2 text-xl"></i>
-                <span class="text-[#AAAAAA] text-lg font-bold"
-                  >非管理时间段游泳预警</span
-                >
-              </div>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="text-slate-300">解除时间: 5分钟前</span>
-                <div
-                  class="bg-slate-700/50 px-3 py-1 rounded-md text-sm flex items-center"
-                >
-                  <i class="ti ti-clock-check mr-1"></i>
-                  <span>自动解除</span>
+                
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-2">最近反馈意见</h4>
+                    <div class="space-y-3">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                <span>2023-11-14 15:30</span>
+                                <span>王先生</span>
+                            </div>
+                            <p class="text-sm">洗手池水龙头有点松动，希望尽快维修。</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                <span>2023-11-13 10:15</span>
+                                <span>李女士</span>
+                            </div>
+                            <p class="text-sm">卫生保持得很好，没有异味，点赞！</p>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-        </div>
+        </main>
 
-        <!-- Status Bar -->
-        <div
-          class="flex justify-between items-center bg-[#136480] bg-opacity-20 p-3 rounded-lg border border-[#136480] border-opacity-30"
-        >
-          <div class="flex items-center">
-            <i class="ti ti-activity-heartbeat text-[#1FC6FF] mr-2"></i>
-            <span>系统状态: 正常运行中</span>
-          </div>
-          <div class="flex items-center">
-            <span class="mr-3">最后更新: 2025-05-13 10:30:45</span>
-            <span class="text-xs text-gray-400"
-              >由 Claude 3.7 Sonnet 于 2025-05-13 生成</span
-            >
-          </div>
-        </div>
-      </div>
+        <!-- 底部导航 -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 max-w-414 mx-auto">
+            <div class="flex justify-around p-2">
+                <a href="#" class="flex flex-col items-center p-2 text-blue-600">
+                    <i class="ti ti-home text-xl"></i>
+                    <span class="text-xs mt-1">首页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center p-2 text-gray-500">
+                    <i class="ti ti-calendar text-xl"></i>
+                    <span class="text-xs mt-1">记录</span>
+                </a>
+                <a href="#" class="flex flex-col items-center p-2 text-gray-500">
+                    <i class="ti ti-chart-bar text-xl"></i>
+                    <span class="text-xs mt-1">统计</span>
+                </a>
+                <a href="#" class="flex flex-col items-center p-2 text-gray-500">
+                    <i class="ti ti-user text-xl"></i>
+                    <span class="text-xs mt-1">我的</span>
+                </a>
+            </div>
+        </nav>
     </div>
-  </body>
+
+    <script>
+        // 打卡功能
+        document.getElementById('checkInBtn').addEventListener('click', function() {
+            // 模拟打卡操作
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            
+            // 获取地理位置
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude.toFixed(6);
+                        const longitude = position.coords.longitude.toFixed(6);
+                        
+                        // 更新UI显示打卡成功
+                        const checkInBtn = document.getElementById('checkInBtn');
+                        checkInBtn.innerHTML = '<i class="ti ti-check mr-2"></i>打卡成功';
+                        checkInBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        checkInBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                        checkInBtn.disabled = true;
+                        
+                        // 显示打卡信息
+                        alert(`打卡成功！\n时间: ${timeString}\n位置: 经度 ${longitude}, 纬度 ${latitude}`);
+                    },
+                    function(error) {
+                        alert('获取位置信息失败，但仍可打卡');
+                        
+                        // 更新UI显示打卡成功
+                        const checkInBtn = document.getElementById('checkInBtn');
+                        checkInBtn.innerHTML = '<i class="ti ti-check mr-2"></i>打卡成功';
+                        checkInBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        checkInBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                        checkInBtn.disabled = true;
+                        
+                        alert(`打卡成功！\n时间: ${timeString}\n位置: 获取失败`);
+                    }
+                );
+            } else {
+                alert('您的浏览器不支持地理位置功能，但仍可打卡');
+                
+                // 更新UI显示打卡成功
+                const checkInBtn = document.getElementById('checkInBtn');
+                checkInBtn.innerHTML = '<i class="ti ti-check mr-2"></i>打卡成功';
+                checkInBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                checkInBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                checkInBtn.disabled = true;
+                
+                alert(`打卡成功！\n时间: ${timeString}`);
+            }
+        });
+    </script>
+</body>
 </html>
