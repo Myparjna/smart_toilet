@@ -3,246 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>无人机状态监控面板</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tabler Icons -->
+    <title>会员名片</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <!-- Tabler Icons via CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <!-- 阿里巴巴普惠体 -->
+    <!-- Google Fonts - Alibaba PuHuiTi (using Noto Sans SC as a close alternative if direct CDN is tricky for Alibaba) -->
+    <!-- For actual Alibaba PuHuiTi, you might need to host it or use specific CDN that offers it.
+         Here, Noto Sans SC is a good fallback for broad CJK support.
+         If Alibaba PuHuiTi is available via a specific Google Fonts API name or another CDN, replace it.
+         Let's assume we are using a generic sans-serif for now and specify Alibaba PuHuiTi in the font-family list.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Alibaba PuHuiTi 2.0 55 Regular', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom aspect ratio for 9:18 (or 1:2) and centering */
+        .app-shell {
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000; /* Black bars */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .app-container {
+            width: 375px; /* Common iPhone width */
+            height: 750px; /* 9:18 aspect ratio (simplified from 812 for iPhone X etc.) */
+            /* For a more precise 9:18, if width is 375px, height should be 375 * (18/9) = 750px */
+            background-color: #F7FAFC; /* Light gray background for the app itself */
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3); /* Optional shadow for the app container itself */
+        }
+
+        .app-main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .app-main-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        /* Custom emphasis color */
+        .text-emphasis { color: #347777; }
+        .bg-emphasis { background-color: #347777; }
+        .border-emphasis { border-color: #347777; }
+
+        /* Subtle background pattern for card (optional) */
+        .card-bg-pattern {
+            /* Example: very subtle dots */
+            /* background-image: radial-gradient(circle, rgba(52, 119, 119, 0.05) 1px, transparent 1px);
+            background-size: 10px 10px; */
+
+            /* Example: subtle diagonal lines */
+            /* background-image: repeating-linear-gradient(
+                45deg,
+                rgba(52, 119, 119, 0.03),
+                rgba(52, 119, 119, 0.03) 1px,
+                transparent 1px,
+                transparent 10px
+            ); */
+        }
+
+        /* For the subtle geometric shapes on card background */
+        .decorative-shape {
+            position: absolute;
+            opacity: 0.08;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .fade-out-edge {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+    </style>
     <script>
+        // Tailwind custom config (if needed, but for simple color it's easier to define utility classes or use inline styles for one-offs)
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        background: '#041A21',
-                        primary: '#1FC6FF',
-                        secondary: '#136480',
-                        warning: '#FFC800',
-                        success: '#86FB8B',
-                        info: '#59FFFF',
-                        danger: '#FF5252',
-                    },
-                    fontFamily: {
-                        sans: ['Noto Sans SC', 'sans-serif'],
-                    },
+                        emphasis: '#347777',
+                    }
                 }
             }
         }
-    </script>
-    <style>
-        body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background-color: #041A21;
-        }
-    </style>
-</head>
-<body class="flex items-center justify-center min-h-screen bg-background">
-    <!-- 模拟框架 -->
-    <div class="bg-gray-900 rounded-lg p-4 shadow-xl w-[440px] h-[400px]">
-        <!-- 无人机状态监控面板 -->
-        <div class="bg-background rounded-lg p-4 h-full flex flex-col" id="drone-panel">
-            <!-- 无人机选择区域 -->
-            <div class="flex justify-between items-center mb-3 pb-2 border-b border-secondary/40">
-                <h3 class="text-primary font-bold text-lg">无人机状态监控</h3>
-                <div class="text-xs text-gray-400">2025-04-27 10:32:15</div>
-            </div>
-            
-            <!-- 无人机选择标签 -->
-            <div class="flex space-x-1 mb-3">
-                <button class="drone-select flex items-center bg-secondary rounded px-2 py-1 text-white text-sm hover:bg-primary/70 transition" data-drone="6432">
-                    <i class="ti ti-drone text-lg mr-1"></i>
-                    <span>6432</span>
-                    <div class="ml-2 flex items-center">
-                        <i class="ti ti-battery-3 text-success"></i>
-                        <span class="text-xs ml-1">82%</span>
-                    </div>
-                </button>
-                <button class="drone-select flex items-center bg-secondary/50 rounded px-2 py-1 text-white/80 text-sm hover:bg-primary/70 transition" data-drone="6231">
-                    <i class="ti ti-drone text-lg mr-1"></i>
-                    <span>6231</span>
-                    <div class="ml-2 flex items-center">
-                        <i class="ti ti-battery-2 text-warning"></i>
-                        <span class="text-xs ml-1">45%</span>
-                    </div>
-                </button>
-                <button class="drone-select flex items-center bg-secondary/50 rounded px-2 py-1 text-white/80 text-sm hover:bg-primary/70 transition" data-drone="7284">
-                    <i class="ti ti-drone text-lg mr-1"></i>
-                    <span>7284</span>
-                    <div class="ml-2 flex items-center">
-                        <i class="ti ti-battery-1 text-danger"></i>
-                        <span class="text-xs ml-1">23%</span>
-                    </div>
-                </button>
-            </div>
 
-            <!-- 状态显示区域 -->
-            <div class="grid grid-cols-2 gap-3 mb-2">
-                <!-- 左侧状态 -->
-                <div class="bg-secondary/20 backdrop-blur-sm rounded-lg p-3 flex flex-col space-y-3">
-                    <!-- 电池状态 -->
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">电池状态</div>
-                        <div class="flex items-center">
-                            <div class="w-20 h-3 bg-secondary/50 rounded-full overflow-hidden">
-                                <div class="h-full bg-success" style="width: 82%"></div>
+        function copyToClipboard(text, elementId) {
+            navigator.clipboard.writeText(text).then(function() {
+                const feedbackEl = document.getElementById(elementId);
+                if (feedbackEl) {
+                    const originalText = feedbackEl.innerHTML;
+                    feedbackEl.innerHTML = '<i class="ti ti-check text-green-500"></i> 已复制';
+                    setTimeout(() => {
+                        feedbackEl.innerHTML = originalText;
+                    }, 2000);
+                }
+            }).catch(function(err) {
+                console.error('无法复制文本: ', err);
+                const feedbackEl = document.getElementById(elementId);
+                if (feedbackEl) {
+                    const originalText = feedbackEl.innerHTML;
+                    feedbackEl.innerHTML = '<i class="ti ti-x text-red-500"></i> 复制失败';
+                    setTimeout(() => {
+                        feedbackEl.innerHTML = originalText;
+                    }, 2000);
+                }
+            });
+        }
+    </script>
+</head>
+<body class="bg-slate-100">
+
+    <div class="app-shell">
+        <div class="app-container">
+
+            <!-- App Header -->
+            <header class="sticky top-0 z-20 flex items-center justify-between h-14 px-4 bg-white shadow-sm">
+                <button class="p-2 -ml-2 text-gray-600 hover:text-emphasis">
+                    <i class="ti ti-arrow-left text-2xl"></i>
+                </button>
+                <h1 class="text-lg font-semibold text-gray-800">会员名片</h1>
+                <button class="p-2 -mr-2 text-gray-600 hover:text-red-500">
+                    <i class="ti ti-x text-2xl"></i>
+                </button>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="app-main-content p-5 bg-slate-50">
+                <div class="relative bg-white rounded-2xl shadow-xl overflow-hidden card-bg-pattern">
+                    <!-- Decorative shapes -->
+                    <div class="decorative-shape w-32 h-32 bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full -top-10 -left-10" style="opacity:0.3;"></div>
+                    <div class="decorative-shape w-40 h-40 border-2 border-teal-200 rounded-tr-full rounded-bl-full bottom-[-4rem] right-[-3rem] transform rotate-45" style="opacity:0.2;"></div>
+
+
+                    <div class="relative z-10 p-6 sm:p-8">
+                        <!-- Personal Info Section -->
+                        <div class="flex items-center space-x-5 mb-6 pb-6 border-b border-slate-200">
+                            <div class="relative">
+                                <img class="w-20 h-20 rounded-full object-cover shadow-md border-2 border-white"
+                                     src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                                     alt="会员头像">
+                                <span class="absolute -bottom-1 -right-1 bg-emphasis text-white p-1 rounded-full shadow-sm">
+                                    <i class="ti ti-check text-xs"></i> <!-- Example: Verified badge -->
+                                </span>
                             </div>
-                            <span class="text-success ml-2 text-sm font-bold">82%</span>
-                        </div>
-                    </div>
-                    
-                    <!-- 剩余飞行时间 -->
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">剩余飞行</div>
-                        <div class="text-primary text-sm font-bold">
-                            <i class="ti ti-clock"></i> 23 分钟
-                        </div>
-                    </div>
-                    
-                    <!-- 无人机状态 -->
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">运行状态</div>
-                        <div class="bg-info/20 text-info px-2 py-0.5 rounded text-xs font-medium">
-                            航线飞行
-                        </div>
-                    </div>
-                    
-                    <!-- 高度 -->
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">绝对高度</div>
-                        <div class="text-white text-sm font-bold">
-                            128.5 m
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 右侧状态 -->
-                <div class="bg-secondary/20 backdrop-blur-sm rounded-lg p-3 flex flex-col space-y-3">
-                    <!-- 速度信息 -->
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">水平速度</div>
-                        <div class="text-white text-sm font-bold">
-                            8.2 m/s
-                        </div>
-                    </div>
-                    
-                    <!-- 垂直速度 -->
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">垂直速度</div>
-                        <div class="text-white text-sm font-bold">
-                            1.3 m/s
-                        </div>
-                    </div>
-                    
-                    <!-- 位置信息 -->
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">经度</div>
-                        <div class="text-white text-sm font-bold">
-                            116.3972°E
-                        </div>
-                    </div>
-                    
-                    <!-- 位置信息 -->
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">纬度</div>
-                        <div class="text-white text-sm font-bold">
-                            39.9075°N
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 机场与任务区域 -->
-            <div class="grid grid-cols-2 gap-3 mt-auto">
-                <!-- 机场状态 -->
-                <div class="bg-secondary/20 backdrop-blur-sm rounded-lg p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="text-primary text-sm font-medium">
-                            <i class="ti ti-building-broadcast-tower mr-1"></i>机场状态
-                        </div>
-                        <div class="bg-success/20 text-success px-2 py-0.5 rounded text-xs font-medium">
-                            作业中
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">机场电量</div>
-                        <div class="flex items-center">
-                            <div class="w-20 h-2 bg-secondary/50 rounded-full overflow-hidden">
-                                <div class="h-full bg-warning" style="width: 68%"></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">李明远</h2>
+                                <p class="text-emphasis font-semibold text-md">副会长</p>
                             </div>
-                            <span class="text-warning ml-2 text-xs font-bold">68%</span>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- 任务状态 -->
-                <div class="bg-secondary/20 backdrop-blur-sm rounded-lg p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="text-primary text-sm font-medium">
-                            <i class="ti ti-clipboard-check mr-1"></i>任务状态
-                        </div>
-                        <div class="bg-info/20 text-info px-2 py-0.5 rounded text-xs font-medium">
-                            执行中
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="text-gray-400 text-sm">完成进度</div>
-                        <div class="flex items-center">
-                            <div class="w-20 h-2 bg-secondary/50 rounded-full overflow-hidden">
-                                <div class="h-full bg-primary" style="width: 75%"></div>
+
+                        <!-- Company Info Section -->
+                        <div class="space-y-5 mb-6 pb-6 border-b border-slate-200">
+                            <div>
+                                <div class="flex items-center text-gray-500 mb-1">
+                                    <i class="ti ti-building-skyscraper mr-3 text-xl text-emphasis"></i>
+                                    <span class="text-sm font-medium">所在公司</span>
+                                </div>
+                                <p class="text-gray-800 text-lg font-semibold">未来科技创新有限公司</p>
+                                <span class="inline-block mt-1.5 bg-teal-50 text-emphasis text-xs font-semibold px-2.5 py-1 rounded-full">副会长单位</span>
                             </div>
-                            <span class="text-primary ml-2 text-xs font-bold">75%</span>
+                            <div>
+                                <div class="flex items-center text-gray-500 mb-1">
+                                    <i class="ti ti-briefcase mr-3 text-xl text-emphasis"></i>
+                                    <span class="text-sm font-medium">公司职务</span>
+                                </div>
+                                <p class="text-gray-700 text-md">首席执行官 (CEO)</p>
+                            </div>
+                        </div>
+
+                        <!-- Contact Info Section -->
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex items-center justify-between text-gray-500 mb-1">
+                                    <div class="flex items-center">
+                                        <i class="ti ti-phone mr-3 text-xl text-emphasis"></i>
+                                        <span class="text-sm font-medium">联系电话</span>
+                                    </div>
+                                    <button onclick="copyToClipboard('13812345678', 'copyFeedbackPhone')" id="copyFeedbackPhone" class="text-xs text-emphasis hover:underline flex items-center gap-1">
+                                        <i class="ti ti-copy"></i> 复制
+                                    </button>
+                                </div>
+                                <p class="text-gray-700 text-md font-mono tracking-wider">138****5678</p>
+                                <p class="text-xs text-slate-400 mt-0.5">点击右侧按钮复制完整号码</p>
+                            </div>
+                            <div>
+                                <div class="flex items-center text-gray-500 mb-1">
+                                    <i class="ti ti-map-pin mr-3 text-xl text-emphasis"></i>
+                                    <span class="text-sm font-medium">公司地址</span>
+                                </div>
+                                <p class="text-gray-700 text-md">北京市海淀区中关村软件园 A 座 1201 室</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Placeholder for potential additional content/modules if needed -->
+                <!-- <div class="mt-6 bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">更多信息</h3>
+                    <p class="text-sm text-gray-500">此处可放置如个人简介、业务范围等更多扩展信息。</p>
+                </div> -->
+
+            </main>
+
+            <!-- App Footer - Action Bar -->
+            <footer class="sticky bottom-0 z-20 grid grid-cols-3 items-center h-16 bg-white shadow-[0_-2px_10px_-3px_rgba(0,0,0,0.07)] border-t border-gray-200">
+                <button class="flex flex-col items-center justify-center h-full text-gray-600 hover:bg-gray-50 hover:text-emphasis transition-colors duration-150">
+                    <i class="ti ti-address-book text-2xl"></i>
+                    <span class="text-xs mt-0.5">存通讯录</span>
+                </button>
+                <button class="flex flex-col items-center justify-center h-full text-gray-600 hover:bg-gray-50 hover:text-emphasis transition-colors duration-150">
+                    <i class="ti ti-home-2 text-2xl"></i>
+                    <span class="text-xs mt-0.5">回到首页</span>
+                </button>
+                <button class="flex flex-col items-center justify-center h-full text-gray-600 hover:bg-gray-50 hover:text-emphasis transition-colors duration-150">
+                    <i class="ti ti-share-2 text-2xl"></i>
+                    <span class="text-xs mt-0.5">分享名片</span>
+                </button>
+            </footer>
+
         </div>
     </div>
 
-    <script>
-        // 简单的无人机切换逻辑
-        document.querySelectorAll('.drone-select').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // 重置所有按钮样式
-                document.querySelectorAll('.drone-select').forEach(b => {
-                    b.classList.remove('bg-secondary');
-                    b.classList.add('bg-secondary/50');
-                    b.classList.remove('text-white');
-                    b.classList.add('text-white/80');
-                });
-                
-                // 设置当前选中按钮样式
-                this.classList.remove('bg-secondary/50');
-                this.classList.add('bg-secondary');
-                this.classList.remove('text-white/80');
-                this.classList.add('text-white');
-                
-                // 这里可以添加无人机数据切换逻辑
-                const droneId = this.getAttribute('data-drone');
-                console.log('选中无人机:', droneId);
-                
-                // 根据选中的无人机ID切换显示数据
-                // 这里只是演示，实际应用中需要根据真实数据更新UI
-                if(droneId === '6432') {
-                    // 更新UI数据为6432无人机数据
-                } else if(droneId === '6231') {
-                    // 更新UI数据为6231无人机数据
-                } else if(droneId === '7284') {
-                    // 更新UI数据为7284无人机数据
-                }
-            });
-        });
-        
-        // 更新时间
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toISOString().replace('T', ' ').substring(0, 19);
-            document.querySelector('.text-xs.text-gray-400').textContent = timeString;
-        }
-        
-        // 定期更新时间
-        updateTime();
-        setInterval(updateTime, 1000);
-    </script>
 </body>
 </html>
